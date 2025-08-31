@@ -1,5 +1,6 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -7,42 +8,51 @@ import org.junit.jupiter.api.Test;
 import com.example.Banco;
 
 public class BancoTest {
+    Banco bancoCompleto;
 
     @BeforeEach
-    public void setUp(){
-        Banco bancoCompleto = new Banco("Banco Completo", 10000);
+    public void setUp() {
+        bancoCompleto = new Banco("Banco Completo", 1000);
     }
-    @Test
+
+    @Test // saldo inicial de conta recém criada
     public void balanceNewAccountTest() {
-        Banco b = new Banco("777", 1000);
-        assertEquals(1000, b.getBalance());
+        // se não existisse o setup Banco b = new Banco("777", 1000);
+        assertEquals(1000, bancoCompleto.getBalance());
+
     }
 
-    @Test
-    public void depositNewAccountTest(){
-        Banco d = new Banco("dep", 1000);
-        d.deposit(500);
-        assertEquals(1500, d.getBalance());
+    @Test // teste de deposito nessa mesma conta
+    public void depositNewAccountTest() {
+        // Banco d = new Banco("dep", 1000);
+        bancoCompleto.deposit(500);
+        assertEquals(1500, bancoCompleto.getBalance());
     }
 
-    @Test
-    public void depositInvalidTest(){
-        Banco d = new Banco("dep", 1000);
-        d.deposit(-500);
-        assertEquals(1000, d.getBalance());
-    }
-    @Test
-    public void withdrawNewAccountTest(){
-        Banco w = new Banco("withdraw", 1000);
-        w.withdraw(400);
-        assertEquals(600, w.getBalance());
+    @Test // teste para se caso invalido, no caso número negativo em deposito
+    public void depositInvalidTest() {
+        // Banco d = new Banco("dep", 1000);
+        bancoCompleto.deposit(-500);
+        assertEquals(1000, bancoCompleto.getBalance());
     }
 
-    @Test
-    public void balanceInvalidTest(){
-        Banco bIn = new Banco("inv", 1000);
-        bIn.withdraw(1500);
-        assertFalse(false, "False deu erro ai rapaziada");
+    @Test // saque bem sucedido
+    public void saqueValidoTest() {
+        Boolean ret = bancoCompleto.withdraw(100);
+        assertTrue(ret);
+        assertEquals(900, bancoCompleto.getBalance());
+    }
 
+    @Test // saque falho por saldo insuficiente
+    public void withdrawInvalidBalanceTest() {
+        boolean ret = bancoCompleto.withdraw(1500);
+        assertFalse(ret);
+        assertEquals(1000, bancoCompleto.getBalance());
+    }
+
+    @Test // saque falho no valor negativo
+    public void withdrawInvalidNegativeBalanceTest(){
+        bancoCompleto.withdraw(-200);
+        assertEquals(1000, bancoCompleto.getBalance());
     }
 }
